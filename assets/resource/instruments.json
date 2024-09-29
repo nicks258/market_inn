@@ -1,0 +1,42 @@
+[
+  {
+    "symbol": "BINANCE:BTCUSDT",
+    "exchange": "BINANCE",
+    "type": "Crypto"
+  },
+  {
+    "symbol": "BINANCE:ETHUSDT",
+    "exchange": "BINANCE",
+    "type": "Crypto"
+  },
+  {
+    "symbol": "BINANCE:BNBUST",
+    "exchange": "BINANCE",
+    "type": "Crypto"
+  },
+  {
+    "symbol": "BINANCE:PEPEUSDT",
+    "exchange": "BINANCE",
+    "type": "Crypto"
+  },
+  {
+    "symbol": "BINANCE:SOLUSDT",
+    "exchange": "BINANCE",
+    "type": "Crypto"
+  },
+  {
+    "symbol": "BINANCE:DOGEUSDT",
+    "exchange": "BINANCE",
+    "type": "Crypto"
+  },
+  {
+    "symbol": "AAPL",
+    "exchange": "NASDAQ",
+    "type": "Stock"
+  },
+  {
+    "symbol": "MSFT",
+    "exchange": "NASDAQ",
+    "type": "Stock"
+  }
+]

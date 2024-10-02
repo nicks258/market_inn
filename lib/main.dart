@@ -4,8 +4,12 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:market_inn/core/extensions/context_extensions.dart';
+import 'package:market_inn/core/presentation/controllers/connectivity_bloc/connectivity_bloc.dart';
+import 'package:market_inn/core/presentation/widgets/colored_safe_area.dart';
 import 'package:market_inn/presentation/home/controllers/home_bloc/home_bloc.dart';
 import 'package:market_inn/presentation/home/views/home_page.dart';
+
 import 'core/domain/entities/instrument_model.dart';
 import 'core/presentation/controllers/theme_bloc/theme_bloc.dart';
 import 'core/services/service_locator.dart';
@@ -27,36 +31,57 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     TextTheme textTheme = createTextTheme(context, "Roboto", "Roboto");
     MaterialTheme theme = MaterialTheme(textTheme);
-    return BlocProvider(
-      create: (context) => ThemeBloc(),
-      child: BlocBuilder<ThemeBloc, ThemeState>(
-        builder: (context, state) {
-          return MaterialApp(
-            theme: state.themeData.brightness == Brightness.light
-                ? theme.light()
-                : theme.dark(),
-            home: BlocProvider(
-              create: (_)
-              {
-                debugPrint("instruments_length-> ${instrumentList.length}");
-               return sl<HomeBloc>()..add(SubscribeToPricesEvent(instrumentList[0].symbol));
-               },
-              // create: (_) => HomeBloc(sl())..add(SubscribeToPricesEvent(instrumentList[0].symbol)),
-              // create: (context) {
-              //   final bloc = sl<HomeBloc>()..add(SubscribeToPricesEvent(instrumentList[0].symbol));
-              //   for (final i in instrumentList) {
-              //     bloc.add(SubscribeToPricesEvent((i.symbol)));
-              //   }
-              //   return bloc;
-              // },
-              child: HomePage(
-                instrumentList: instrumentList,
-              ),
-            ),
-          );
-        },
-      ),
-    );
+    return MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (context) => ThemeBloc(),
+          ),
+          BlocProvider(
+            create: (context) => ConnectivityBloc(),
+          ),
+          BlocProvider(
+            create: (context) => sl<HomeBloc>()
+              ..add(SubscribeToPricesEvent(instrumentList[0].symbol)),
+          )
+        ],
+        child: Builder(
+          builder: (context) {
+            final themeState = context.watch<ThemeBloc>().state;
+            final connectivityState = context.watch<ConnectivityBloc>().state;
+
+            return MaterialApp(
+              theme: themeState.themeData.brightness == Brightness.light
+                  ? theme.light()
+                  : theme.dark(),
+              home: ColoredSafeArea(
+                  child: Scaffold(
+                body: Stack(
+                  children: [
+                    HomePage(
+                      instrumentList: instrumentList,
+                    ),
+                    if (!connectivityState.isConnected)
+                      Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Container(
+                          width: context.width,
+                          padding: EdgeInsets.symmetric(
+                              horizontal: context.width / 64,
+                              vertical: context.height / 64),
+                          color: context.colors.error,
+                          child: Text(
+                            'No internet connection detected. Prices may not reflect real-time updates.',
+                            style: context.textTheme.bodyMedium!
+                                .copyWith(color: Colors.white),
+                          ),
+                        ),
+                      )
+                  ],
+                ),
+              )),
+            );
+          },
+        ));
   }
 }
 
@@ -66,5 +91,4 @@ Future<void> readJson() async {
   final instrumentData = await json.decode(response) as List;
   instrumentList =
       instrumentData.map((e) => InstrumentModelItem.fromJson(e)).toList();
-
 }

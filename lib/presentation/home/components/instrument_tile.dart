@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:market_inn/core/extensions/context_extensions.dart';
+import 'package:market_inn/core/extensions/string_extensions.dart';
 
 import '../../../core/domain/entities/instrument_model.dart';
 
@@ -41,7 +42,7 @@ class InstrumentTile extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                price.toStringAsFixed(2),
+                price.toStringAsFixed(3).removeTrailingZeros(),
                 // style: context.textTheme.bodyMedium,
               ),
               Text(

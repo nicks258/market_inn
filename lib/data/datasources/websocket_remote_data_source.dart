@@ -1,23 +1,35 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:web_socket_channel/web_socket_channel.dart';
+import 'package:market_inn/core/resources/app_constants.dart';
 import 'package:web_socket_channel/status.dart' as status;
+import 'package:web_socket_channel/web_socket_channel.dart';
+
+import '../../core/services/connectivity_service.dart';
+import '../../core/services/service_locator.dart';
 import '../../domain/entities/price.dart';
 
 class WebSocketRemoteDataSource {
-  final String apiKey;
   late WebSocketChannel _channel;
   late StreamController<Price> _controller;
   final List<String> _subscribedSymbols = [];
   bool _isConnected = false;
   int _reconnectAttempts = 0;
   final int _maxReconnectAttempts = 5;
+  late ConnectivityService _connectivityService;
 
-  WebSocketRemoteDataSource({required this.apiKey}) {
+  WebSocketRemoteDataSource() {
     _controller = StreamController<Price>.broadcast();
-    _connect();
+    _connectivityService = sl<ConnectivityService>();
+    _connectivityService.connectionStatusStream.listen(
+      (event) {
+        if (event) {
+          _connect();
+        }
+      },
+    );
   }
 
   void _connect() {
@@ -26,7 +38,7 @@ class WebSocketRemoteDataSource {
     try {
       // Establish WebSocket connection
       _channel = WebSocketChannel.connect(
-        Uri.parse('wss://ws.finnhub.io?token=$apiKey'),
+        Uri.parse('wss://ws.finnhub.io?token=${AppConstants.apiKey}'),
       );
       _isConnected = true;
       _reconnectAttempts = 0; // Reset attempts upon successful connection
@@ -34,7 +46,7 @@ class WebSocketRemoteDataSource {
 
       // Listen to WebSocket messages
       _channel.stream.listen(
-            (data) {
+        (data) {
           final decodedData = jsonDecode(data);
 
           if (!_controller.isClosed && decodedData['type'] == 'trade') {
@@ -74,20 +86,26 @@ class WebSocketRemoteDataSource {
       _reconnect();
     } else {
       debugPrint('Max reconnection attempts reached. Giving up.');
+      throw WebSocketException('Max reconnection attempts reached. Giving up.');
     }
   }
 
   /// Attempts reconnection with exponential backoff
   void _reconnect() {
-    _reconnectAttempts += 1;
-    final delay = Duration(minutes: 1 * _reconnectAttempts);
-    debugPrint('Reconnecting in ${delay.inSeconds} seconds (Attempt $_reconnectAttempts)');
+    _connectivityService.connectionStatusStream.listen((event) {
+      if(event){
+        _reconnectAttempts += 1;
+        final delay = Duration(minutes: 1 * _reconnectAttempts);
+        debugPrint(
+            'Reconnecting in ${delay.inSeconds} seconds (Attempt $_reconnectAttempts)');
 
-    Future.delayed(delay, () {
-      if (!_isConnected && _reconnectAttempts < _maxReconnectAttempts) {
-        _connect();
+        Future.delayed(delay, () {
+          if (!_isConnected && _reconnectAttempts < _maxReconnectAttempts) {
+            _connect();
+          }
+        });
       }
-    });
+    },);
   }
 
   /// Resubscribe to symbols after reconnection

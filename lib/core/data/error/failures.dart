@@ -5,5 +5,5 @@ abstract class Failure {
 }
 
 class ServerFailure extends Failure {
-  ServerFailure() : super('Server Failure: Could not fetch prices.');
+  ServerFailure(super.message);
 }

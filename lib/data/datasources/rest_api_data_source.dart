@@ -1,26 +1,74 @@
-// data/datasources/rest_api_data_source.dart
 import 'dart:convert';
+
 import 'package:http/http.dart' as http;
+import 'package:market_inn/core/resources/app_constants.dart';
+import 'package:market_inn/data/models/company_profile_model.dart';
+
+import '../../core/data/error/failures.dart';
 import '../../domain/entities/price.dart';
+import '../models/search_result_model.dart';
 
-class RestApiDataSource {
-  final String apiKey;
+abstract class RestApiDataSource {
+  Future<Price> fetchLatestPrice(String symbol);
 
-  RestApiDataSource({required this.apiKey});
+  Future<CompanyProfileModel> getCompanyProfile(String symbol);
 
-  Future<Price?> fetchLatestPrice(String symbol) async {
-    final url = Uri.parse('https://finnhub.io/api/v1/quote?symbol=$symbol&token=$apiKey');
-    final response = await http.get(url);
+  Future<SearchResultModel> getSearchResults(String query);
+}
 
-    if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-      return Price(
-        symbol: symbol,
-        value: data['c'] + 0.0,
-        previousCloseValue: data['pc'] + 0.0
-      );
-    } else {
-      throw Exception('Failed to fetch price data from API');
+class RestApiDataSourceImpl extends RestApiDataSource {
+  final http.Client httpClient;
+
+  RestApiDataSourceImpl(this.httpClient);
+
+  @override
+  Future<Price> fetchLatestPrice(String symbol) async {
+    try {
+      final url = Uri.parse(
+          '${AppConstants.baseUrl}/api/v1/quote?symbol=$symbol&token=${AppConstants.apiKey}');
+      final response = await httpClient.get(url);
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        return Price(
+            symbol: symbol,
+            value: data['c'] + 0.0,
+            previousCloseValue: data['pc'] + 0.0);
+      }
+      throw ServerFailure('Failed to fetch price data from API');
+    } on Exception catch (e) {
+      throw ServerFailure('Failed to fetch price data from API');
+    }
+  }
+
+  @override
+  Future<CompanyProfileModel> getCompanyProfile(String symbol) async {
+    try {
+      final url = Uri.parse(
+          '${AppConstants.baseUrl}/api/v1/stock/profile2?symbol=$symbol&token=${AppConstants.apiKey}');
+      final response = await httpClient.get(url);
+      if (response.statusCode == 200) {
+        return CompanyProfileModel.fromJson(jsonDecode(response.body));
+      }
+      throw ServerFailure('Failed to fetch price data from API');
+    } on Exception catch (e) {
+      throw ServerFailure("Something went wrong");
+    }
+  }
+
+  @override
+  Future<SearchResultModel> getSearchResults(String query) async {
+    try {
+      final url = Uri.parse(
+          '${AppConstants.baseUrl}/api/v1/search?q=$query&exchange=US&token=${AppConstants.apiKey}');
+      final response = await httpClient.get(url);
+      if (response.statusCode == 200) {
+        return SearchResultModel.fromJson(jsonDecode(response.body));
+      } else {
+        throw ServerFailure(jsonDecode(response.body));
+      }
+    } on Exception catch (e) {
+      throw ServerFailure("Something went wrong");
     }
   }
 }

@@ -10,24 +10,14 @@
     "type": "Crypto"
   },
   {
-    "symbol": "BINANCE:BNBUST",
-    "exchange": "BINANCE",
-    "type": "Crypto"
-  },
-  {
-    "symbol": "BINANCE:PEPEUSDT",
-    "exchange": "BINANCE",
-    "type": "Crypto"
-  },
-  {
     "symbol": "BINANCE:SOLUSDT",
     "exchange": "BINANCE",
     "type": "Crypto"
   },
   {
-    "symbol": "BINANCE:DOGEUSDT",
-    "exchange": "BINANCE",
-    "type": "Crypto"
+    "symbol": "OANDA:EUR_USD",
+    "exchange": "OANDA",
+    "type": "Forex"
   },
   {
     "symbol": "AAPL",
@@ -35,7 +25,27 @@
     "type": "Stock"
   },
   {
+    "symbol": "INTC",
+    "exchange": "NASDAQ",
+    "type": "Stock"
+  },
+  {
+    "symbol": "AMZN",
+    "exchange": "NASDAQ",
+    "type": "Stock"
+  },
+  {
+    "symbol": "META",
+    "exchange": "NASDAQ",
+    "type": "Stock"
+  },
+  {
     "symbol": "MSFT",
+    "exchange": "NASDAQ",
+    "type": "Stock"
+  },
+  {
+    "symbol": "NVDA",
     "exchange": "NASDAQ",
     "type": "Stock"
   }

@@ -19,6 +19,7 @@ void main() {
   const tSymbol = 'AAPL';
 
   final tPrice = Price(
+    isSymbolFound: true,
     symbol: tSymbol,
     value: 150.0,
   );

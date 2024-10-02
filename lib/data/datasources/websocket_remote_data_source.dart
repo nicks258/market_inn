@@ -51,6 +51,7 @@ class WebSocketRemoteDataSource {
 
           if (!_controller.isClosed && decodedData['type'] == 'trade') {
             final price = Price(
+              isSymbolFound: true,
               symbol: decodedData['data'][0]['s'],
               value: decodedData['data'][0]['p'] + .0,
             );
@@ -115,6 +116,10 @@ class WebSocketRemoteDataSource {
     }
     debugPrint('Resubscribed to symbols: $_subscribedSymbols');
   }
+  void _resubscribeToParticularSymbols(String symbol) {
+    _channel.sink.add(jsonEncode({'type': 'subscribe', 'symbol': symbol}));
+    debugPrint('Resubscribed to symbols: $_subscribedSymbols');
+  }
 
   /// Stream for a specific symbol's price updates
   Stream<Price> getPriceStream(String symbol) async* {
@@ -129,10 +134,16 @@ class WebSocketRemoteDataSource {
     yield* _controller.stream;
   }
 
-  void addManualPrice(Price price) {
+  void addManualPrice({Price? price,required String symbol}) {
     if (!_controller.isClosed) {
-      debugPrint('Manual price added for ${price.symbol}: ${price.value}');
-      _controller.add(price);
+
+      if(price!=null) {
+        debugPrint('Manual price added for ${price.symbol}: ${price.value}');
+        _controller.add(price);
+        unsubscribe(symbol);
+      }else{
+        _controller.add(Price(symbol: symbol, value: 0,isSymbolFound: false),);
+      }
     }
   }
 

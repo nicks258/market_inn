@@ -10,17 +10,17 @@ import '../../../../domain/entities/price.dart';
 import '../../../../domain/usecases/get_price_stream_usecase.dart';
 
 part 'home_bloc.freezed.dart';
+
 part 'home_event.dart';
+
 part 'home_state.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final GetPriceStreamUseCase _getPriceStreamUsecase;
 
-
   HomeBloc(this._getPriceStreamUsecase)
       : super(HomeState.internal(prices: {}, isConnected: true)) {
     on<SubscribeToPricesEvent>(_handlePriceEvent);
-
   }
 
   Future _handlePriceEvent(
@@ -29,17 +29,21 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
         in _getPriceStreamUsecase(event.symbol)) {
       either.fold(
         (failure) {
-          emit(state.copyWith(
-              isConnected: false, errorMessage: failure.message));
+          debugPrint("failure in bloc $failure");
+          if (failure is SymbolNotFoundFailure) {
+            debugPrint("failure in bloc $failure");
+            emit(state.copyWith(errorMessage: failure.message));
+          }
         },
         (price) {
           final updatedPrices = Map<String, Price>.from(state.prices);
           final previousStatePrice = updatedPrices[price.symbol];
           double priceDifference = 0.00;
           if (price.previousCloseValue != null &&
-              price.previousCloseValue != 0 && price.value!=0) {
+              price.previousCloseValue != 0 &&
+              price.value != 0) {
             priceDifference = price.value - price.previousCloseValue!;
-          } else if(price.value!=0) {
+          } else if (price.value != 0) {
             priceDifference = (price.value - (previousStatePrice?.value ?? 0));
           }
           if (previousStatePrice != null) {
@@ -48,13 +52,16 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
                 symbol: price.symbol,
                 value: price.value,
                 previousCloseValue: price.previousCloseValue,
+                isSymbolFound: price.isSymbolFound,
                 // Use current price as the previous value
-                priceDifference: double.parse(priceDifference.toStringAsPrecision(3)));
+                priceDifference:
+                    double.parse(priceDifference.toStringAsPrecision(3)));
           } else {
             // For the first update, previousValue is null
             updatedPrices[price.symbol] = Price(
                 symbol: price.symbol,
                 value: price.value,
+                isSymbolFound: price.isSymbolFound,
                 previousCloseValue: price.previousCloseValue,
                 // No previous value yet
                 priceDifference: 0);
@@ -65,7 +72,5 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       );
     }
   }
-
-
 }
 //65513.27

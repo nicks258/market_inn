@@ -61,8 +61,8 @@ void main() {
     // Arrange: Set state with price data
     when(() => mockHomeBloc.state).thenReturn(
       HomeState.internal(prices: {
-        'AAPL': Price(symbol: 'AAPL', value: 150.00),
-        'GOOGL': Price(symbol: 'GOOGL', value: 2800.00),
+        'AAPL': Price(symbol: 'AAPL', value: 150.00,isSymbolFound: true),
+        'GOOGL': Price(symbol: 'GOOGL', value: 2800.00,isSymbolFound: true),
       }, isConnected: true),
     );
 

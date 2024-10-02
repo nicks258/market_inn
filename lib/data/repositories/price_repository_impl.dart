@@ -15,13 +15,14 @@ class PriceRepositoryImpl implements PriceRepository {
   final WebSocketRemoteDataSource webSocketRemoteDataSource;
   final RestApiDataSource restApiDataSource;
   final Function(Duration, void Function(Timer)) timerCreator;
-  PriceRepositoryImpl(
-      this.webSocketRemoteDataSource, this.restApiDataSource,{this.timerCreator = Timer.periodic}) {
+
+  PriceRepositoryImpl(this.webSocketRemoteDataSource, this.restApiDataSource,
+      {this.timerCreator = Timer.periodic}) {
     _startMonitoring();
   }
 
   // Map to store the last received WebSocket timestamp for each symbol
-  final Map<String, DateTime> _lastReceivedData = {};
+  late Map<String, DateTime> _lastReceivedData = {};
 
   // Periodic timer to check for missing data
   Timer? _monitoringTimer;
@@ -43,28 +44,28 @@ class PriceRepositoryImpl implements PriceRepository {
       }
     } on WebSocketChannelException catch (e) {
       debugPrint('WebSocket error in repository: $e');
-      yield Left(
-          ServerFailure("Something went wrong :${e.message}")); // Yield a failure if WebSocket connection fails
+      yield Left(ServerFailure(
+          "Something went wrong :${e.message}")); // Yield a failure if WebSocket connection fails
     } catch (e) {
-      yield Left(ServerFailure("Something went wrong :${e.toString()}")); // Catch any other exception
+      yield Left(ServerFailure(
+          "Something went wrong :${e.toString()}")); // Catch any other exception
     }
   }
 
   @override
-  Future<Either<Failure,Price>> getLatestPriceFromApi(String symbol) async {
+  Future<Either<Failure, Price>> getLatestPriceFromApi(String symbol) async {
     try {
       final price = await restApiDataSource.fetchLatestPrice(symbol);
       debugPrint('Fetched latest price from REST API for $symbol: $price');
-      return Right(price);;
+      return Right(price);
+      ;
+    } on SymbolNotFoundFailure catch (e) {
+      return Left(SymbolNotFoundFailure(e.message));
     } catch (e) {
       debugPrint('Failed to fetch price for $symbol from REST API: $e');
       return Left(ServerFailure("Something went wrong :${e.toString()}"));
     }
   }
-
-
-
-
 
   void _startMonitoring() {
     _monitoringTimer = timerCreator(monitorTime, (timer) async {
@@ -81,12 +82,16 @@ class PriceRepositoryImpl implements PriceRepository {
           debugPrint('cancelling timer');
           // Call REST API to fetch the latest price for the symbol
           final latestPrice = await getLatestPriceFromApi(symbol);
-          latestPrice.fold((l) {
-            debugPrint(
-                "Something went wrong :${l.message}");
-          }, (r) {
-            webSocketRemoteDataSource.addManualPrice(r);
-          },);
+          latestPrice.fold(
+            (l) {
+              webSocketRemoteDataSource.addManualPrice(symbol: symbol);
+            },
+            (r) {
+              webSocketRemoteDataSource.addManualPrice(
+                  price: r, symbol: r.symbol);
+            },
+          );
+
           // Reset the last received time after fetching from REST API
           _lastReceivedData[symbol] = DateTime.now();
         }

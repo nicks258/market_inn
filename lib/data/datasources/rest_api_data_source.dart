@@ -30,9 +30,13 @@ class RestApiDataSourceImpl extends RestApiDataSource {
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
+        if(data['c']==0 && data['d']==null && data['pc']==0){
+           throw SymbolNotFoundFailure("Price not found for $symbol");
+        }
         return Price(
             symbol: symbol,
             value: data['c'] + 0.0,
+            isSymbolFound: true,
             previousCloseValue: data['pc'] + 0.0);
       }
       throw ServerFailure('Failed to fetch price data from API');
@@ -47,10 +51,11 @@ class RestApiDataSourceImpl extends RestApiDataSource {
       final url = Uri.parse(
           '${AppConstants.baseUrl}/api/v1/stock/profile2?symbol=$symbol&token=${AppConstants.apiKey}');
       final response = await httpClient.get(url);
-      if (response.statusCode == 200) {
+      if (response.statusCode == 200 && response.body!='{}') {
         return CompanyProfileModel.fromJson(jsonDecode(response.body));
+      }else{
+        throw SymbolNotFoundFailure("Company details not found");
       }
-      throw ServerFailure('Failed to fetch price data from API');
     } on Exception catch (e) {
       throw ServerFailure("Something went wrong");
     }

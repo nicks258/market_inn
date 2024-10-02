@@ -43,6 +43,7 @@ class DetailsPage extends StatelessWidget {
                 HorizontalLineWidget().addPadding(
                     edgeInsets:
                         EdgeInsets.symmetric(vertical: context.height / 128)),
+                heightSpacer(context.height/128),
                 IntrinsicHeight(
                   child: Row(
                     children: [

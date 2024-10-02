@@ -121,6 +121,7 @@ class _HomePageState extends State<HomePage> {
                     final double price = priceEntity?.value ?? 0.0;
                     final double differenceInPrice =
                         priceEntity?.priceDifference ?? 0;
+                    final isSymbolFound = priceEntity?.isSymbolFound?? true;
                     // Determine price change
                     Color priceColor = Colors.transparent;
                     if (differenceInPrice > 0) {
@@ -147,11 +148,14 @@ class _HomePageState extends State<HomePage> {
                           );
                         },
                       ):GlobalSnackBar.show(context,"Detail page is only available for stocks"),
-                      child: InstrumentTile(
-                        differenceInPrice: differenceInPrice,
-                        instrument: instrument,
-                        price: price,
-                        priceColor: priceColor,
+                      child: Container(
+                        color: !isSymbolFound? context.colors.outlineVariant: context.colors.surface,
+                        child: InstrumentTile(
+                          differenceInPrice: differenceInPrice,
+                          instrument: instrument,
+                          price: price,
+                          priceColor: priceColor,
+                        ),
                       ),
                     );
                   },

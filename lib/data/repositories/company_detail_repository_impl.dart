@@ -25,8 +25,12 @@ class CompanyDetailRepositoryImpl extends CompanyDetailRepository {
           symbol: symbol,
           marketCapital: companyProfile.marketCapitalization,
           stockExchange: companyProfile.exchange));
-    } on ServerFailure catch (e) {
-      return Left(ServerFailure(e.message));
+    }
+    on SymbolNotFoundFailure catch(e){
+      return Left(e);
+    }
+    on ServerFailure catch (e) {
+      return Left(e);
     }
   }
 }

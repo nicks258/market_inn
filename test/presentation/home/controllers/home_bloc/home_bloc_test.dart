@@ -40,8 +40,9 @@ void main() {
         // Mock the stream to return price updates
         when(() => mockGetPriceStream(instrumentSymbol)).thenAnswer(
           (_) => Stream.fromIterable([
-            Right(Price(symbol: instrumentSymbol, value: instrumentPrice1)),
+            Right(Price(symbol: instrumentSymbol, value: instrumentPrice1,isSymbolFound: true)),
             Right(Price(
+              isSymbolFound: true,
                 symbol: instrumentSymbol,
                 value: instrumentPrice2,
                 priceDifference: instrumentPrice2 - instrumentPrice1))
@@ -53,12 +54,14 @@ void main() {
       expect: () => [
         HomeState.internal(prices: {
           instrumentSymbol: Price(
+            isSymbolFound: true,
               symbol: instrumentSymbol,
               value: instrumentPrice1,
               priceDifference: 0),
         }),
         HomeState.internal(prices: {
           instrumentSymbol: Price(
+            isSymbolFound: true,
               symbol: instrumentSymbol,
               value: instrumentPrice2,
               priceDifference: instrumentPrice2 - instrumentPrice1),

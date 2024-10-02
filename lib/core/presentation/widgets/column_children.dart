@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:market_inn/core/extensions/context_extensions.dart';
 
 import 'spacer.dart';
 
@@ -38,7 +39,7 @@ class ColumnChildren extends StatelessWidget {
                       Theme.of(context)
                           .textTheme
                           .bodyMedium!
-                          .copyWith(color: Colors.black54)),
+                          .copyWith(color: context.colors.onSurface.withOpacity(0.5))),
           ],
         ),
         Flexible(

@@ -27,7 +27,7 @@ void main() {
   });
 
   final tSymbol = "AAPL";
-  final tPrice = Price(symbol: tSymbol, value: 150.0);
+  final tPrice = Price(symbol: tSymbol, value: 150.0,isSymbolFound: true);
   final tFailure =
       ServerFailure("Something went wrong :WebSocketChannelException");
 

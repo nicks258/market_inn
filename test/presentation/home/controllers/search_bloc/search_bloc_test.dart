@@ -2,7 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:market_inn/core/data/error/failures.dart';
 import 'package:market_inn/core/utils/enums.dart';
-import 'package:market_inn/data/models/search_result_model.dart';
+import 'package:market_inn/domain/entities/search_result.dart';
 import 'package:market_inn/presentation/home/controllers/search_bloc/search_bloc.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -19,8 +19,8 @@ void main() {
 
   const tQuery = 'App';
   final tSearchResults = [
-    SearchItem(description: 'APPLE INC', type: 'Common Stock',symbol: "AAPL",displaySymbol: "AAPL"),
-    SearchItem(description: 'APPLIED UV INC', type: 'Common Stock',symbol: "AUVIQ",displaySymbol: "AUVIQ"),
+    SearchItemEntity(description: 'APPLE INC', type: 'Common Stock',symbol: "AAPL",displaySymbol: "AAPL"),
+    SearchItemEntity(description: 'APPLIED UV INC', type: 'Common Stock',symbol: "AUVIQ",displaySymbol: "AUVIQ"),
   ];
 
   test('initial state should be loading', () {
@@ -31,7 +31,7 @@ void main() {
       () async {
     // Arrange
     when(() => mockGetSearchResultUseCase(tQuery)).thenAnswer(
-        (_) async => Right(SearchResultModel(result: tSearchResults)));
+        (_) async => Right(SearchResult(result: tSearchResults)));
 
     // Assert later
     final expected = [

@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:market_inn/core/data/error/failures.dart';
-import 'package:market_inn/data/models/search_result_model.dart';
+import 'package:market_inn/domain/entities/search_result.dart';
 import 'package:market_inn/domain/usecases/get_search_result_usecase.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -18,12 +18,12 @@ void main() {
 
   const tQuery = 'Apple';
 
-  final tSearchItem = SearchItem(
+  final tSearchItem = SearchItemEntity(
     description: 'Apple Inc.',
     type: 'Company',
   );
 
-  final tSearchResultModel = SearchResultModel(
+  final tSearchResultModel = SearchResult(
     result: [tSearchItem],
   );
 

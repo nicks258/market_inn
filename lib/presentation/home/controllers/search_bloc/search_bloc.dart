@@ -4,7 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:market_inn/core/utils/enums.dart';
 
-import '../../../../data/models/search_result_model.dart';
+import '../../../../domain/entities/search_result.dart';
 import '../../../../domain/usecases/get_search_result_usecase.dart';
 
 part 'search_bloc.freezed.dart';

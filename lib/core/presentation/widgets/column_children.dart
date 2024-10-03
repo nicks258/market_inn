@@ -42,12 +42,11 @@ class ColumnChildren extends StatelessWidget {
                           .copyWith(color: context.colors.onSurface.withOpacity(0.5))),
           ],
         ),
-        Flexible(
-          child: Text(text,
-              textAlign: TextAlign.center,
-              style: textStyle ??
-                  Theme.of(context).textTheme.bodySmall),
-        ),
+        Text(text,
+            textAlign: TextAlign.start,
+            overflow: TextOverflow.clip,
+            style: textStyle ??
+                Theme.of(context).textTheme.bodySmall),
       ],
     );
   }

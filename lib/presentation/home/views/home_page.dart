@@ -11,7 +11,7 @@ import 'package:market_inn/core/utils/global_snakebar.dart';
 import 'package:market_inn/presentation/home/components/instrument_tile.dart';
 import 'package:market_inn/presentation/home/views/detail_page.dart';
 
-import '../../../core/domain/entities/instrument_model.dart';
+import '../../../core/domain/entities/instrument.dart';
 import '../../../core/presentation/controllers/theme_bloc/theme_bloc.dart';
 import '../../../core/presentation/widgets/horizontal_line_widget.dart';
 import '../../../core/services/service_locator.dart';
@@ -20,7 +20,7 @@ import '../controllers/detail_bloc/detail_bloc.dart';
 import '../controllers/home_bloc/home_bloc.dart';
 
 class HomePage extends StatefulWidget {
-  final List<InstrumentModelItem> instrumentList;
+  final List<Instrument> instrumentList;
 
   const HomePage({super.key, required this.instrumentList});
 
@@ -40,6 +40,7 @@ class _HomePageState extends State<HomePage> {
     for (final i in widget.instrumentList) {
       bloc.add(SubscribeToPricesEvent((i.symbol)));
     }
+
   }
 
   @override

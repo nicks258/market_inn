@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:http/http.dart' as http;
 import 'package:market_inn/core/data/error/failures.dart';
@@ -18,7 +19,8 @@ void main() {
   late MockHttpClient mockHttpClient;
 
   // Register a fallback value for Uri to avoid the error.
-  setUpAll(() {
+  setUpAll(() async {
+    await dotenv.load(fileName: "assets/.env");
     registerFallbackValue(Uri.parse('https://example.com'));
   });
 
@@ -39,14 +41,14 @@ void main() {
 
       // Here we mock the `get` method of the http client
       when(() => mockHttpClient.get(Uri.parse(
-          '${AppConstants.baseUrl}/api/v1/quote?symbol=$symbol&token=${AppConstants.apiKey}')))
+              '${AppConstants.baseUrl}/api/v1/quote?symbol=$symbol&token=${dotenv.get('apiKey')}')))
           .thenAnswer((_) async => http.Response(responseJson, 200));
 
       // Act
       final result = await dataSource.fetchLatestPrice(symbol);
       // Assert
       expect(result, isA<Price>());
-      expect(result.value, 150.0);  // Expected price value
+      expect(result.value, 150.0); // Expected price value
       expect(result.previousCloseValue, 145.0); // Expected previous close value
       verify(() => mockHttpClient.get(any())).called(1);
     });
@@ -58,7 +60,7 @@ void main() {
 
       // Act & Assert
       expect(
-            () async => await dataSource.fetchLatestPrice(symbol),
+        () async => await dataSource.fetchLatestPrice(symbol),
         throwsA(isA<ServerFailure>()),
       );
       verify(() => mockHttpClient.get(any())).called(1);
@@ -68,7 +70,8 @@ void main() {
   group('getCompanyProfile', () {
     const symbol = 'AAPL';
 
-    test('should return CompanyProfileModel when the response is successful', () async {
+    test('should return CompanyProfileModel when the response is successful',
+        () async {
       // Arrange
       final responseJson = jsonEncode({
         'currency': 'USD',
@@ -92,26 +95,27 @@ void main() {
       verify(() => mockHttpClient.get(any())).called(1);
     });
 
-
-    test('should throw ServerFailure when the response is an error in getCompanyProfile()', () async {
+    test(
+        'should throw ServerFailure when the response is an error in getCompanyProfile()',
+        () async {
       // Arrange
       when(() => mockHttpClient.get(any()))
           .thenAnswer((_) async => http.Response('Error', 404));
 
       // Act & Assert
       expect(
-            () async => await dataSource.getCompanyProfile(symbol),
-        throwsA(isA<ServerFailure>()),
+        () async => await dataSource.getCompanyProfile(symbol),
+        throwsA(isA<SymbolNotFoundFailure>()),
       );
       verify(() => mockHttpClient.get(any())).called(1);
     });
-
   });
 
   group('getSearchResults', () {
     const query = 'Apple';
 
-    test('should return SearchResultModel when the response is successful', () async {
+    test('should return SearchResultModel when the response is successful',
+        () async {
       // Arrange
       final responseJson = jsonEncode({
         'results': [], // Example structure of your search result
@@ -135,7 +139,7 @@ void main() {
 
       // Act & Assert
       expect(
-            () async => await dataSource.getSearchResults(query),
+        () async => await dataSource.getSearchResults(query),
         throwsA(isA<ServerFailure>()),
       );
       verify(() => mockHttpClient.get(any())).called(1);

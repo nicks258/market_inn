@@ -17,14 +17,7 @@ class CompanyDetailRepositoryImpl extends CompanyDetailRepository {
       String symbol) async {
     try {
       final companyProfile = await _restApiDataSource.getCompanyProfile(symbol);
-      return Right(CompanyDetail(
-          stockCurrency: companyProfile.currency,
-          companyIndustry: companyProfile.finnhubIndustry,
-          companyLogo: companyProfile.logo,
-          companyName: companyProfile.name,
-          symbol: symbol,
-          marketCapital: companyProfile.marketCapitalization,
-          stockExchange: companyProfile.exchange));
+      return Right(CompanyDetail.toDomain(companyProfile));
     }
     on SymbolNotFoundFailure catch(e){
       return Left(e);

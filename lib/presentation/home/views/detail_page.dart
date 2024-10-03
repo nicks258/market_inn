@@ -27,10 +27,13 @@ class DetailsPage extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Text(
-                      companyDetails!.companyName,
-                      style: context.textTheme.titleLarge!
-                          .copyWith(color: context.colors.primaryContainer),
+                    Flexible(
+                      child: Text(
+                        companyDetails!.companyName,
+                        overflow: TextOverflow.clip,
+                        style: context.textTheme.titleLarge!
+                            .copyWith(color: context.colors.primaryContainer),
+                      ),
                     ),
                     Text(" (${companyDetails.symbol})")
                   ],
@@ -43,41 +46,45 @@ class DetailsPage extends StatelessWidget {
                 HorizontalLineWidget().addPadding(
                     edgeInsets:
                         EdgeInsets.symmetric(vertical: context.height / 128)),
-                heightSpacer(context.height/128),
+                heightSpacer(context.height / 128),
                 IntrinsicHeight(
                   child: Row(
                     children: [
                       NetworkImageWidget(
                         imageUrl: companyDetails.companyLogo,
                         width: context.width / 12,
-                        height: context.width/12,
+                        height: context.width / 12,
                       ),
-                      widthSpacer(context.width/128),
-
-                      ColumnChildren(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-
-                        text: companyDetails.companyIndustry,
-                        label: "Sector",
+                      widthSpacer(context.width / 128),
+                      Flexible(
+                        child: ColumnChildren(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          text: companyDetails.companyIndustry,
+                          label: "Sector",
+                        ),
                       ),
-                      widthSpacer(context.width/256),
+                      widthSpacer(context.width / 256),
                       VerticalDivider(
                         thickness: 0.5,
                       ),
-                      widthSpacer(context.width/256),
-                      ColumnChildren(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        text:
-                            "${companyDetails.marketCapital.toStringAsFixed(2)} ${companyDetails.stockCurrency}",
-                        label: "Market Cap",
+                      widthSpacer(context.width / 256),
+                      Expanded(
+                        child: ColumnChildren(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          text:
+                              "${companyDetails.marketCapital.toStringAsFixed(2)} ${companyDetails.stockCurrency}",
+                          label: "Market Cap",
+                        ),
                       ),
                     ],
                   ),
                 )
               ],
-            ).addPadding(edgeInsets: EdgeInsets.symmetric(horizontal: context.width/64));
+            ).addPadding(
+                edgeInsets:
+                    EdgeInsets.symmetric(horizontal: context.width / 64));
           case RequestStatus.error:
             return Center(
               child: Text(state.message ?? ""),

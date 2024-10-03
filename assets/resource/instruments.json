@@ -15,9 +15,9 @@
     "type": "Crypto"
   },
   {
-    "symbol": "OANDA:EUR_USD",
-    "exchange": "OANDA",
-    "type": "Forex"
+    "symbol": "EBAY",
+    "exchange": "NASDAQ",
+    "type": "Stock"
   },
   {
     "symbol": "AAPL",

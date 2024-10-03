@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:market_inn/core/domain/entities/instrument_model.dart';
+import 'package:market_inn/core/domain/entities/instrument.dart';
 import 'package:market_inn/core/presentation/controllers/theme_bloc/theme_bloc.dart';
 import 'package:market_inn/domain/entities/price.dart';
 import 'package:market_inn/presentation/home/controllers/home_bloc/home_bloc.dart';
@@ -12,8 +12,8 @@ import '../../../core/services/service_locator_test.dart';
 import '../../../mocks/mock_bloc/mock_home_bloc.dart';
 
 final instrumentList = [
-InstrumentModelItem(exchange: '', symbol: 'AAPL', type: 'Stock'),
-InstrumentModelItem(exchange: '', symbol: 'GOOGL', type: 'Stock'),
+Instrument(exchange: '', symbol: 'AAPL', type: 'Stock'),
+Instrument(exchange: '', symbol: 'GOOGL', type: 'Stock'),
 ];
 
 
@@ -35,9 +35,9 @@ void main() {
       child: MaterialApp(
         home: BlocProvider<HomeBloc>(
           create: (_) => mockHomeBloc,
-          child: HomePage(
+          child:Scaffold(body:  HomePage(
             instrumentList: instrumentList,
-          ),
+          ),),
         ),
       ),
     );

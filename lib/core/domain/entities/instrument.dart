@@ -3,7 +3,7 @@
 
 import 'safe_convert.dart';
 
-class InstrumentModelItem {
+class Instrument {
   // MSFT
   final String symbol;
   // NASDAQ
@@ -11,13 +11,13 @@ class InstrumentModelItem {
   // Stock
   final String type;
 
-  InstrumentModelItem({
+  Instrument({
     this.symbol = "",
     this.exchange = "",
     this.type = "",
   });
 
-  factory InstrumentModelItem.fromJson(Map<String, dynamic>? json) => InstrumentModelItem(
+  factory Instrument.fromJson(Map<String, dynamic>? json) => Instrument(
     symbol: asT<String>(json, 'symbol'),
     exchange: asT<String>(json, 'exchange'),
     type: asT<String>(json, 'type'),
@@ -29,12 +29,12 @@ class InstrumentModelItem {
     'type': type,
   };
 
-  InstrumentModelItem copyWith({
+  Instrument copyWith({
     String? symbol,
     String? exchange,
     String? type,
   }) {
-    return InstrumentModelItem(
+    return Instrument(
       symbol: symbol ?? this.symbol,
       exchange: exchange ?? this.exchange,
       type: type ?? this.type,

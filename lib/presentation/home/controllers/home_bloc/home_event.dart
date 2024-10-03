@@ -10,3 +10,5 @@ class SubscribeToPricesEvent extends HomeEvent {
   SubscribeToPricesEvent(this.symbol);
 }
 
+
+

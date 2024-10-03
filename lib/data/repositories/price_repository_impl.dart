@@ -2,7 +2,7 @@
 import 'dart:async';
 
 import 'package:dartz/dartz.dart';
-import 'package:flutter/material.dart';
+import 'package:market_inn/core/resources/app_constants.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 import '../../core/data/error/failures.dart';
@@ -22,14 +22,13 @@ class PriceRepositoryImpl implements PriceRepository {
   }
 
   // Map to store the last received WebSocket timestamp for each symbol
-  late Map<String, DateTime> _lastReceivedData = {};
+  late final Map<String, DateTime> _lastReceivedData = {};
 
   // Periodic timer to check for missing data
   Timer? _monitoringTimer;
   Duration monitorTime = Duration(seconds: 5);
 
-  final Map<String, Timer> _symbolTimers = {};
-  final Duration noDataTimeout = Duration(seconds: 10);
+
 
   @override
   Stream<Either<Failure, Price>> getPriceStream(String symbol) async* {
@@ -43,7 +42,7 @@ class PriceRepositoryImpl implements PriceRepository {
         yield Right(price);
       }
     } on WebSocketChannelException catch (e) {
-      debugPrint('WebSocket error in repository: $e');
+
       yield Left(ServerFailure(
           "Something went wrong :${e.message}")); // Yield a failure if WebSocket connection fails
     } catch (e) {
@@ -56,13 +55,12 @@ class PriceRepositoryImpl implements PriceRepository {
   Future<Either<Failure, Price>> getLatestPriceFromApi(String symbol) async {
     try {
       final price = await restApiDataSource.fetchLatestPrice(symbol);
-      debugPrint('Fetched latest price from REST API for $symbol: $price');
+
       return Right(price);
-      ;
     } on SymbolNotFoundFailure catch (e) {
       return Left(SymbolNotFoundFailure(e.message));
     } catch (e) {
-      debugPrint('Failed to fetch price for $symbol from REST API: $e');
+
       return Left(ServerFailure("Something went wrong :${e.toString()}"));
     }
   }
@@ -73,13 +71,12 @@ class PriceRepositoryImpl implements PriceRepository {
       for (var symbol in _lastReceivedData.keys) {
         final lastDataTime = _lastReceivedData[symbol];
         if (lastDataTime != null &&
-            now.difference(lastDataTime) > noDataTimeout) {
-          debugPrint(
-              'No WebSocket data received for $symbol. Triggering fallback API...');
+            now.difference(lastDataTime) > AppConstants.noDataTimeout) {
+
           timer.cancel();
           monitorTime = Duration(minutes: 5);
           _startMonitoring();
-          debugPrint('cancelling timer');
+
           // Call REST API to fetch the latest price for the symbol
           final latestPrice = await getLatestPriceFromApi(symbol);
           latestPrice.fold(

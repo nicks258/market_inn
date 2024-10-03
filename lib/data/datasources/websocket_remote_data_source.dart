@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:market_inn/core/resources/app_constants.dart';
 import 'package:web_socket_channel/status.dart' as status;
 import 'package:web_socket_channel/web_socket_channel.dart';
@@ -17,7 +18,7 @@ class WebSocketRemoteDataSource {
   final List<String> _subscribedSymbols = [];
   bool _isConnected = false;
   int _reconnectAttempts = 0;
-  final int _maxReconnectAttempts = 5;
+
   late ConnectivityService _connectivityService;
 
   WebSocketRemoteDataSource() {
@@ -38,7 +39,7 @@ class WebSocketRemoteDataSource {
     try {
       // Establish WebSocket connection
       _channel = WebSocketChannel.connect(
-        Uri.parse('wss://ws.finnhub.io?token=${AppConstants.apiKey}'),
+        Uri.parse('wss://ws.finnhub.io?token=${dotenv.get('apiKey')}'),
       );
       _isConnected = true;
       _reconnectAttempts = 0; // Reset attempts upon successful connection
@@ -83,7 +84,7 @@ class WebSocketRemoteDataSource {
     debugPrint(message);
     _isConnected = false;
 
-    if (_reconnectAttempts < _maxReconnectAttempts) {
+    if (_reconnectAttempts < AppConstants.webSocketMaxReconnectAttempts) {
       _reconnect();
     } else {
       debugPrint('Max reconnection attempts reached. Giving up.');
@@ -101,7 +102,7 @@ class WebSocketRemoteDataSource {
             'Reconnecting in ${delay.inSeconds} seconds (Attempt $_reconnectAttempts)');
 
         Future.delayed(delay, () {
-          if (!_isConnected && _reconnectAttempts < _maxReconnectAttempts) {
+          if (!_isConnected && _reconnectAttempts < AppConstants.webSocketMaxReconnectAttempts) {
             _connect();
           }
         });
@@ -114,11 +115,11 @@ class WebSocketRemoteDataSource {
     for (var symbol in _subscribedSymbols) {
       _channel.sink.add(jsonEncode({'type': 'subscribe', 'symbol': symbol}));
     }
-    debugPrint('Resubscribed to symbols: $_subscribedSymbols');
+
   }
   void _resubscribeToParticularSymbols(String symbol) {
     _channel.sink.add(jsonEncode({'type': 'subscribe', 'symbol': symbol}));
-    debugPrint('Resubscribed to symbols: $_subscribedSymbols');
+
   }
 
   /// Stream for a specific symbol's price updates

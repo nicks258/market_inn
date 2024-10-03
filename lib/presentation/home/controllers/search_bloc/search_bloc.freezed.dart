@@ -16,27 +16,28 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$SearchState {
-  List<SearchItem>? get searchResult => throw _privateConstructorUsedError;
+  List<SearchItemEntity>? get searchResult =>
+      throw _privateConstructorUsedError;
   RequestStatus? get status => throw _privateConstructorUsedError;
   String? get message => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(List<SearchItem>? searchResult,
+    required TResult Function(List<SearchItemEntity>? searchResult,
             RequestStatus? status, String? message)
         internal,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(List<SearchItem>? searchResult, RequestStatus? status,
-            String? message)?
+    TResult? Function(List<SearchItemEntity>? searchResult,
+            RequestStatus? status, String? message)?
         internal,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(List<SearchItem>? searchResult, RequestStatus? status,
-            String? message)?
+    TResult Function(List<SearchItemEntity>? searchResult,
+            RequestStatus? status, String? message)?
         internal,
     required TResult orElse(),
   }) =>
@@ -72,7 +73,9 @@ abstract class $SearchStateCopyWith<$Res> {
       _$SearchStateCopyWithImpl<$Res, SearchState>;
   @useResult
   $Res call(
-      {List<SearchItem>? searchResult, RequestStatus? status, String? message});
+      {List<SearchItemEntity>? searchResult,
+      RequestStatus? status,
+      String? message});
 }
 
 /// @nodoc
@@ -98,7 +101,7 @@ class _$SearchStateCopyWithImpl<$Res, $Val extends SearchState>
       searchResult: freezed == searchResult
           ? _value.searchResult
           : searchResult // ignore: cast_nullable_to_non_nullable
-              as List<SearchItem>?,
+              as List<SearchItemEntity>?,
       status: freezed == status
           ? _value.status
           : status // ignore: cast_nullable_to_non_nullable
@@ -120,7 +123,9 @@ abstract class _$$InternalImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {List<SearchItem>? searchResult, RequestStatus? status, String? message});
+      {List<SearchItemEntity>? searchResult,
+      RequestStatus? status,
+      String? message});
 }
 
 /// @nodoc
@@ -144,7 +149,7 @@ class __$$InternalImplCopyWithImpl<$Res>
       searchResult: freezed == searchResult
           ? _value._searchResult
           : searchResult // ignore: cast_nullable_to_non_nullable
-              as List<SearchItem>?,
+              as List<SearchItemEntity>?,
       status: freezed == status
           ? _value.status
           : status // ignore: cast_nullable_to_non_nullable
@@ -161,15 +166,15 @@ class __$$InternalImplCopyWithImpl<$Res>
 
 class _$InternalImpl implements _Internal {
   const _$InternalImpl(
-      {final List<SearchItem>? searchResult = const [],
+      {final List<SearchItemEntity>? searchResult = const [],
       this.status = RequestStatus.loading,
       this.message = ''})
       : _searchResult = searchResult;
 
-  final List<SearchItem>? _searchResult;
+  final List<SearchItemEntity>? _searchResult;
   @override
   @JsonKey()
-  List<SearchItem>? get searchResult {
+  List<SearchItemEntity>? get searchResult {
     final value = _searchResult;
     if (value == null) return null;
     if (_searchResult is EqualUnmodifiableListView) return _searchResult;
@@ -215,7 +220,7 @@ class _$InternalImpl implements _Internal {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(List<SearchItem>? searchResult,
+    required TResult Function(List<SearchItemEntity>? searchResult,
             RequestStatus? status, String? message)
         internal,
   }) {
@@ -225,8 +230,8 @@ class _$InternalImpl implements _Internal {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(List<SearchItem>? searchResult, RequestStatus? status,
-            String? message)?
+    TResult? Function(List<SearchItemEntity>? searchResult,
+            RequestStatus? status, String? message)?
         internal,
   }) {
     return internal?.call(searchResult, status, message);
@@ -235,8 +240,8 @@ class _$InternalImpl implements _Internal {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(List<SearchItem>? searchResult, RequestStatus? status,
-            String? message)?
+    TResult Function(List<SearchItemEntity>? searchResult,
+            RequestStatus? status, String? message)?
         internal,
     required TResult orElse(),
   }) {
@@ -277,12 +282,12 @@ class _$InternalImpl implements _Internal {
 
 abstract class _Internal implements SearchState {
   const factory _Internal(
-      {final List<SearchItem>? searchResult,
+      {final List<SearchItemEntity>? searchResult,
       final RequestStatus? status,
       final String? message}) = _$InternalImpl;
 
   @override
-  List<SearchItem>? get searchResult;
+  List<SearchItemEntity>? get searchResult;
   @override
   RequestStatus? get status;
   @override

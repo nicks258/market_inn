@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:market_inn/core/utils/enums.dart';
-import 'package:market_inn/data/models/search_result_model.dart';
+import 'package:market_inn/domain/entities/search_result.dart';
 import 'package:market_inn/presentation/home/controllers/search_bloc/search_bloc.dart';
 import 'package:market_inn/presentation/home/views/search_page.dart';
 import 'package:mocktail/mocktail.dart';
@@ -16,7 +16,7 @@ void main() {
     mockSearchBloc = MockSearchBloc();
   });
 
-  Widget createWidgetUnderTest(List<SearchItem> searchResults) {
+  Widget createWidgetUnderTest(List<SearchItemEntity> searchResults) {
     return BlocProvider<SearchBloc>(
       create: (context) => mockSearchBloc,
       child: MaterialApp(
@@ -28,12 +28,12 @@ void main() {
   }
 
   final tSearchResults = [
-    SearchItem(
+    SearchItemEntity(
         description: 'APPLE INC',
         type: 'Common Stock',
         symbol: "AAPL",
         displaySymbol: "AAPL"),
-    SearchItem(
+    SearchItemEntity(
         description: 'APPLIED UV INC',
         type: 'Common Stock',
         symbol: "AUVIQ",

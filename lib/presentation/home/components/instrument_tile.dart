@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:market_inn/core/extensions/context_extensions.dart';
 import 'package:market_inn/core/extensions/string_extensions.dart';
 
-import '../../../core/domain/entities/instrument_model.dart';
+import '../../../core/domain/entities/instrument.dart';
 
 class InstrumentTile extends StatelessWidget {
   const InstrumentTile({super.key, required this.instrument, required this.priceColor, required this.price, required this.differenceInPrice});
 
-  final InstrumentModelItem instrument;
+  final Instrument instrument;
   final Color priceColor;
   final double price;
   final double differenceInPrice;

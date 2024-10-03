@@ -165,9 +165,12 @@ Used Roboto font to provide styling to texts with all theme required information
 
 ## App builds
 
-- **Android** - [app_release.apk](https://drive.google.com/file/d/1Tv0JWALvyE6Tlz4tzDmKyturjK4p04qx/view?usp=sharing)
+- **Android** - [app_release.apk](https://drive.google.com/file/d/1027yLTqC8ZbKgbdWiqWrEzJlRGPnExNV/view?usp=drive_link)
 - **iOS** - if required I can provide but need apple device ids for iPhones.
 
+## App Screen Recording
+
+ - [Screen recording](https://drive.google.com/file/d/19kqQ4yjBo8cBe1yaBy60U07marbHniaj/view?usp=sharing)
 
 ## App Screenshots
 |Light Mode| Dark Mode |

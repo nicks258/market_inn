@@ -15,6 +15,8 @@ Flutter mobile app where users can view real time prices,company info and search
 Install and set up the Flutter environment with version `3.24.3`. Ensure the `instruments.json` file is located in the `assets\resource` folder. You can modify the home screen loading symbols using this file. Sample required json structure `{"symbol":"BINANCE:ETHUSDT",  
 "exchange": "BINANCE",  
 "type": "Crypto"}`.
+To enhance the app’s security, I utilized the [flutter_dotenv](https://pub.dev/packages/flutter_dotenv) package to store and retrieve the API key from a .env file. For ease of installation, I have included the `.env` file in the repository.
+
 ## Features
 - The app features to show real-time price updates of instruments using websockets provided by [Finnhub.io](https://finnhub.io/docs/api/websocket-trades). Visually indicating whether prices have **increased**, **decreased**, or has **remained stable** with price difference between current and previous price.
 - To enhance UX during after-market hours when Finnhub websockets fail to emit data, the app waits 10 seconds before using the [Finnhub quote API](https://finnhub.io/docs/api/quote) to fetch current and previous close prices. This service runs every 5 minutes to minimize API calls.
@@ -27,6 +29,7 @@ Install and set up the Flutter environment with version `3.24.3`. Ensure the `in
 - In case of a websocket disconnection, the app automatically attempts to **reconnect** and fetch updated prices from tickers. The maximum reconnect limit is 5, adjustable based on business logic.
 - The list of symbols is fetched from `instruments.json` in the assets folder, ensuring the app’s scalability for future updates to load the list from a **Server** or **Firestore**.
 - The project code adheres to **clean code architecture**, **best practices**, and **Test Driven Development** (TDD). It includes comprehensive code comments and test cases, ensuring robustness and scalability.
+- Integrated [dartz](https://pub.dev/packages/dartz) to enhance error handling. Using types like Either and Option allows for more predictable, functional code. It simplifies managing success and failure cases, improving code readability and maintainability.
 
 ## Project Architecture
 
